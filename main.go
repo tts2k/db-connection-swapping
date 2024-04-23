@@ -36,7 +36,12 @@ func main() {
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 			return
 		}
-		SwapDB()
+
+		err := SwapDB()
+		if err != nil {
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			log.Fatalln("swap:", err)
+		}
 	})
 
 	quit := make(chan bool)

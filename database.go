@@ -134,15 +134,22 @@ func GetName() string {
 	return title
 }
 
-func SwapDB() {
+func SwapDB() error {
+	oldDB := db.conn
+	defer oldDB.Close()
+
 	now := time.Now()
 	newConfig := Config{
 		DBName:      "test.db" + "-" + now.Format(time.RFC3339),
 		UpdatedTime: now,
 	}
-	writeConfigFile(&newConfig)
+	err := writeConfigFile(&newConfig)
+	if err != nil {
+		return err
+	}
 
 	InitDB()
+	return nil
 }
 
 func CloseDB() {
